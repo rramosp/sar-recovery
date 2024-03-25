@@ -556,3 +556,45 @@ def H_A_alpha_plane_classification(T):
     w = np.where(A >= 0.5)
     cl[w] = 2 * cl[w]
     return cl
+
+def matlog(C):
+    """
+    Performs the matrix logrithm of the given hermitian C matrix(ces)
+    
+    https://en.wikipedia.org/wiki/Logarithm_of_a_matrix
+
+    Parameters
+    ----------
+    C : ndarray, shape (..., N, N)
+        Input matrix.
+
+    Returns
+    -------
+    ndarray, shape (..., N, N)
+        The matrix logarithm of the input matrix C.
+
+    """
+    W,V = np.linalg.eigh(C)
+    Wl = np.log(W)
+    return np.einsum("...ij,...j,...jk->...ik", V, Wl, np.swapaxes(V.conj(), -1, -2))
+
+def matexp(C):
+    """
+    Performs the matrix exponential of the given hermitian C matrix(ces)
+    
+    https://en.wikipedia.org/wiki/Matrix_exponential
+
+    Parameters
+    ----------
+    C : ndarray, shape (..., N, N)
+        Input matrix.
+
+    Returns
+    -------
+    ndarray, shape (..., N, N)
+        The matrix exponential of the input matrix C.
+
+    """
+    W,V = np.linalg.eigh(C)
+    We = np.exp(W)
+    return np.einsum("...ij,...j,...jk->...ik", V, We, np.swapaxes(V.conj(), -1, -2))
